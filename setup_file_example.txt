@@ -1,0 +1,7 @@
+#To run the simulation model copy this file and rename it to local.setup then change the folder/file locations below to match your local setup 
+#the .setup file extension will ensure that your local directory names are not saved to github.
+
+projection_script <- "C:/Users/Documents/Allocation_forecasting.R" #Location of SEFSC forcasting function file
+assessment_dir <- "C:/Users/Documents/Base" #Location of your base assessment model this should be a finished estimated model with 100 years of forecast projections
+working_dir <- "C:/Users/Documents/sims" #This is the folder location where all simulation runs will be saved 
+save_file <- "C:/Users/Documents/results" #This is a file name for saving the key simulation results so you can reload them later 
