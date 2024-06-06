@@ -49,6 +49,11 @@ rt_mean <- sort(c(0.01,0.03,0.06))
 #How many random red tide replicates to run
 n_rand_reps <- 500
 
+#How many years of known catch are entered in the projections
+#Red tide mortality will not be added in these years for projections or 
+#randomization.
+N_fixed_years <- 3
+
 #Set seed to allow replication of results
 global.seed <- 1234
 set.seed(global.seed)
@@ -111,7 +116,7 @@ for(i in seq_along(rt_proj_ave)){
   #simulation because ABC is supposed to account for unknown uncertainty not 
   #offset an avoidable bias such as this.
   #This uses the average red tide rate in every projection year
-  forecast_base$ForeCatch[forecast_base$ForeCatch$Fleet==rt_fleet,4] <- rep(rt_proj_ave[i],forecast_base$Nforecastyrs)
+  forecast_base$ForeCatch[forecast_base$ForeCatch$Fleet==rt_fleet & forecast_base$ForeCatch$Year>(base_output$endyr+N_fixed_years),4] <- rep(rt_proj_ave[i],(forecast_base$Nforecastyrs-N_fixed_years))
   
   r4ss::SS_writeforecast(mylist=forecast_base,dir=file.path(proj_dir,"Base"),overwrite=TRUE)
 
@@ -142,20 +147,20 @@ for(i in seq_along(rt_proj_ave)){
       #draw a random number of red tide events from a uniform distribution between min and max number specified
       n_rt_events <- sample(n_rt_events_min:n_rt_events_max,1) #
       #calculate the total red tide mortality expected from the specified mean and number of projection years
-      rt_total <- rt_mean[j]*forecast_base$Nforecastyrs
+      rt_total <- rt_mean[j]*(forecast_base$Nforecastyrs-N_fixed_years)
       #calculate random mortality rates from each event from a uniform distribution between min and max number specified
       rt_mags <- runif(n_rt_events,rt_min,rt_max)
       #rescale the red tide magnitudes so that they sum to the expected total mortality
       rt_mags <- rt_mags*(rt_total/sum(rt_mags))
       #create a zero mortality vector for all years
-      rand_red_tide <- rep(0,forecast_base$Nforecastyrs)
+      rand_red_tide <- rep(0,(forecast_base$Nforecastyrs))
       #randomly select years for the red tide mortality to occur and replace zero's with random mortality rates
-      rand_red_tide[sample(1:forecast_base$Nforecastyrs,n_rt_events)] <- rt_mags
+      rand_red_tide[sample((N_fixed_years+1):forecast_base$Nforecastyrs,n_rt_events)] <- rt_mags
       
       
       #Modify forecast file to include random red tide mortality sequence
       forecast_rt <- r4ss::SS_readforecast(file=file.path(rt_dir,k,"forecast.ss")) 
-      forecast_rt$ForeCatch[forecast_rt$ForeCatch$Fleet==rt_fleet,4] <- rand_red_tide
+      forecast_rt$ForeCatch[forecast_rt$ForeCatch$Fleet==rt_fleet & forecast_rt$ForeCatch$Year>(base_output$endyr+N_fixed_years),4] <- rand_red_tide[(N_fixed_years+1):forecast_base$Nforecastyrs]
       #Write out the new forecast file and run model with new random mortality vector
       r4ss::SS_writeforecast(mylist=forecast_rt,dir=file.path(rt_dir,k),overwrite=TRUE)
       shell(paste("cd /d ",file.path(rt_dir,k)," && ss -nohess",sep=""))
@@ -234,11 +239,11 @@ for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
     if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,],col="red")
+      lines(x=years,y=results_landings_summary_mean[i,],col="red",lwd=2)
     }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,],col="blue")
+      lines(x=years,y=results_landings_summary_mean[i,],col="blue",lwd=2)
     }else{
-      lines(x=years,y=results_landings_summary_mean[i,],col="green")
+      lines(x=years,y=results_landings_summary_mean[i,],col="green",lwd=2)
     }
   }
 }
@@ -248,11 +253,11 @@ for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
     if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,],col="red")
+      lines(x=years,y=results_SSB_summary_mean[i,],col="red",lwd=2)
     }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,],col="blue")
+      lines(x=years,y=results_SSB_summary_mean[i,],col="blue",lwd=2)
     }else{
-      lines(x=years,y=results_SSB_summary_mean[i,],col="green")
+      lines(x=years,y=results_SSB_summary_mean[i,],col="green",lwd=2)
     }
   }
 }
@@ -262,11 +267,11 @@ for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
     if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
+      lines(x=years,y=results_SPR_summary_mean[i,],col="red",lwd=2)
     }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
+      lines(x=years,y=results_SPR_summary_mean[i,],col="blue",lwd=2)
     }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
+      lines(x=years,y=results_SPR_summary_mean[i,],col="green",lwd=2)
     }
   }
 }
@@ -276,11 +281,11 @@ for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
     if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
+      lines(x=years,y=results_dep_summary_mean[i,],col="red",lwd=2)
     }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
+      lines(x=years,y=results_dep_summary_mean[i,],col="blue",lwd=2)
     }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
+      lines(x=years,y=results_dep_summary_mean[i,],col="green",lwd=2)
     }
   }
 }
