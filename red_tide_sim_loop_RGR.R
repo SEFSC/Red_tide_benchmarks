@@ -315,52 +315,40 @@ for(i in seq_along(rt_proj_ave)){
 ############
 
 years<-c(base_output$startyr:(base_output$endyr+100))
+cols<-brewer.pal(11, "RdYlBu") 
+#Want this repeated for baseline simulations across true values
+#Reverse colors so blue is good and red is bad ()
+cols<-rev(c(rep(cols[1],3),rep(cols[2],3),rep(cols[3],3),rep(cols[4],3),rep(cols[5],3),
+        rep(cols[6],3),rep(cols[7],3),rep(cols[8],3),rep(cols[9],3),rep(cols[10],3),
+        rep(cols[11],3)))
 
 jpeg(paste0(DIR,"Landings.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      ylab="",xlab="",las=1,xaxt="n",cex.axis=1.5)
-text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,xaxt="n",cex.axis=1.5)
-text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 mtext("Landings (1000s metric tons)",side=2,outer=T)
@@ -375,49 +363,31 @@ jpeg(paste0(DIR,"SSB.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
      ylab="",xlab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_SSB)/1000000*0.95,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_SSB)/1000000*0.95,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_SSB)/1000000*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_SSB)/1000000*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,max(results_SSB)/1000000*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_SSB)/1000000*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 mtext("Spawning Stock Biomass (Relative Number of Eggs)",side=2,outer=T,line=0.7)
@@ -432,49 +402,31 @@ jpeg(paste0(DIR,"SPR Ratio.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      ylab="SPR Ratio",xlab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_SPR),"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_SPR),"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_SPR),"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_SPR),"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,max(results_SPR),"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_SPR),"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 mtext("SPR Ratio",side=2,outer=T,line=0.7)
@@ -490,51 +442,33 @@ par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="",xlab="",las=1,cex.axis=1.5,xaxt="n")
 abline(h=0.3)
-text(2050,max(results_dep)*0.95,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_dep)*0.95,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
 abline(h=0.3)
-text(2050,max(results_dep)*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_dep)*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      xlab="",ylab="",las=1,cex.axis=1.5)
 abline(h=0.3)
-text(2050,max(results_dep)*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_dep)*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 mtext("SSB Ratio (SSB/SSBunfished)",side=2,outer=T,line=0.7)
@@ -549,47 +483,29 @@ jpeg(paste0(DIR,"Recr.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      ylab="",xlab="",cex.axis=1.5,xaxt="n",las=1)
-text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xlab="",ylab="",cex.axis=1.5,xaxt="n",las=1)
-text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xlab="",ylab="",cex.axis=1.5,las=1)
-text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_recr)/1000*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 mtext("Recruitment (Millions of Fish)",side=2,outer=T,line=0.7)
@@ -602,51 +518,33 @@ dev.off()
 
 jpeg(paste0(DIR,"F.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
      ylab="",xlab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_Fexp)*0.9,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,0.4*0.9,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_Fexp)*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,0.4*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,max(results_Fexp)*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,0.4*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 mtext("Exploitation Rate (biomass)",side=2,outer=T,line=0.7)
@@ -661,49 +559,31 @@ jpeg(paste0(DIR,"tbio.jpeg"),res=300,height=2400,width=1600)
 par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      ylab="",xlab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_tbio)/1000*0.95,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,max(results_tbio)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,max(results_tbio)/1000*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,max(results_tbio)/1000*0.9,"True Future RTM mean=0.03",cex=1.5)
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,max(results_tbio)/1000*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,max(results_tbio)/1000*0.9,"True Future RTM mean=0.06",cex=1.5)
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 mtext("Total Biomass (1000s metric tons)",side=2,outer=T,line=0.7)
@@ -719,54 +599,36 @@ par(mfrow=c(3,1),mar=c(0.2,2,0.2,0.9),oma=c(2,2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,8),
      #plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
      ylab="",xlab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,7,"True Future RTM mean=0.01",cex=1.5,col="green")
+text(2050,7,"True Future RTM mean=0.01",cex=1.5)
 #text(2050,max(results_RTkillbio)/1000*0.9,"True Future RTM mean=0.01",cex=1.5,col="green")
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
 #plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,8),
      xlab="",ylab="",las=1,cex.axis=1.5,xaxt="n")
-text(2050,7,"True Future RTM mean=0.03",cex=1.5,col="green")
+text(2050,7,"True Future RTM mean=0.03",cex=1.5)
 #text(2050,max(results_RTkillbio)/1000*0.9,"True Future RTM mean=0.03",cex=1.5,col="green")
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
 #plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,8),
      xlab="",ylab="",las=1,cex.axis=1.5)
-text(2050,7,"True Future RTM mean=0.06",cex=1.5,col="green")
+text(2050,7,"True Future RTM mean=0.06",cex=1.5)
 #text(2050,max(results_RTkillbio)/1000*0.9,"True Future RTM mean=0.06",cex=1.5,col="green")
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 mtext("Red Tide Kill (1000s metric tons)",side=2,outer=T,line=0.7)
@@ -781,47 +643,29 @@ jpeg(paste0(DIR,"Summary_Final.jpeg"),res=300,height=2700,width=2000)
 par(mfrow=c(4,3),mar=c(2,4,0.5,1),oma=c(0.1,0.1,0.1,0.1))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      ylab="Landings (1000s metric tons)",xlab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -831,13 +675,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -847,13 +685,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -863,13 +695,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
@@ -877,13 +703,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -892,13 +712,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -907,13 +721,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -922,13 +730,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -937,13 +739,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -952,13 +748,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 dev.off()
@@ -968,47 +758,29 @@ jpeg(paste0(DIR,"Summary.jpeg"),res=300,height=2400,width=2000)
 par(mfrow=c(4,3),mar=c(2,4,2,1),oma=c(0.1,0.1,0.1,0.1))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      ylab="Landings (1000s metric tons)",xlab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.01",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.03",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1,col="green")
+text(2053,max(results_landings)/1000*0.9,"True Future RTM mean=0.06",cex=1)
 for(i in seq_along(results_landings_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_landings_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1017,13 +789,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 
@@ -1032,13 +798,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 
@@ -1047,13 +807,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max
 for(i in seq_along(results_SSB_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="blue")
-    }else{
-      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col="green")
-    }
+      lines(x=years,y=results_SSB_summary_mean[i,]/1000000,col=cols[i])
   }
 }
 
@@ -1062,13 +816,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1077,13 +825,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1092,13 +834,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results
 for(i in seq_along(results_SPR_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_SPR_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_SPR_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_SPR_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1108,13 +844,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1124,13 +854,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1140,13 +864,7 @@ abline(h=0.3)
 for(i in seq_along(results_dep_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_dep_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_dep_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
 dev.off()
@@ -1155,47 +873,29 @@ jpeg(paste0(DIR,"Summary_2.jpeg"),res=300,height=2700,width=2000)
 par(mfrow=c(4,3),mar=c(2,4,2,1),oma=c(0.1,0.1,0.1,0.1))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      ylab="Recruitment (Millions of Fish)",xlab="",las=1,xaxt="n")
-text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.01",cex=1,col="green")
+text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.01",cex=1)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.03",cex=1,col="green")
+text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.03",cex=1)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xlab="",ylab="",las=1,xaxt="n")
-text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.06",cex=1,col="green")
+text(2053,max(results_recr)/1000*0.9,"True Future RTM mean=0.06",cex=1)
 for(i in seq_along(results_recr_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_recr_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_recr_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1204,13 +904,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1219,13 +913,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1234,13 +922,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(r
 for(i in seq_along(results_tbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_tbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1249,13 +931,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1264,13 +940,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 
@@ -1279,13 +949,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in seq_along(results_RTkillbio_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="blue")
-    }else{
-      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col="green")
-    }
+      lines(x=years,y=results_RTkillbio_summary_mean[i,]/1000,col=cols[i])
   }
 }
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
@@ -1293,13 +957,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(result
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.01){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1308,13 +966,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(result
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.03){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 
@@ -1323,13 +975,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(result
 for(i in seq_along(results_Fexp_summary_mean[,1]))
 {
   if(results_summary_setup[i,"rt_mean"]==0.06){
-    if(results_summary_setup[i,"rt_projected"]<results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="red")
-    }else if(results_summary_setup[i,"rt_projected"]>results_summary_setup[i,"rt_mean"]){
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="blue")
-    }else{
-      lines(x=years,y=results_Fexp_summary_mean[i,],col="green")
-    }
+      lines(x=years,y=results_Fexp_summary_mean[i,],col=cols[i])
   }
 }
 dev.off()
@@ -1409,12 +1055,16 @@ Sims<-as.data.frame(cbind(Start,End))
 Sims$Mean<-rep(seq(1:3),11)
 Sims$Comb<-paste0(Start,":",End)
 Sims$Comb[Sims$Mean==1]
-Mean1<-c(1:500,1501:2000,3001:3500,4501:5000,6001:6500,7501:8000,9001:9500,10500:11000,
+Mean1<-c(1:500,1501:2000,3001:3500,4501:5000,6001:6500,7501:8000,9001:9500,10501:11000,
          12001:12500,13501:14000,15001:15500)
+Mean1_sub<-c(1:5,1501:1505,3001:3005,4501:4505,6001:6005,7501:7505,9001:9005,10501:10505,
+             12001:12005,13501:13505,15001:15005)
 Mean2<-Mean1+500
+Mean2_sub<-Mean1_sub+500
 Mean3<-Mean2+500
+Mean3_sub<-Mean2_sub+500
 
-cols<-brewer.pal(4, "Dark2")
+cols<-brewer.pal(4, "RdYlBu")
 jpeg(paste0(DIR,"Deterministic.jpeg"),res=300,height=2800,width=2000)
 par(mfrow=c(4,1),mar=c(1,4,0.1,0.5),oma=c(2,0.2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
@@ -1425,7 +1075,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,m
   lines(x=years,y=results_landings[2001,]/1000,col=cols[2],lwd=2)
   lines(x=years,y=results_landings[5001,]/1000,col=cols[3],lwd=2)
   lines(x=years,y=results_landings[9501,]/1000,col=cols[4],lwd=2)
-abline(v=2017)
+abline(v=base_output$endyr)
 legend("topright",legend=c("Red tide mortality = 0",
                            "Red tide mortality = 0.01",
                            "Red tide mortality = 0.03",
@@ -1437,7 +1087,7 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results
   lines(x=years,y=results_dep[2001,],col=cols[2],lwd=2)
   lines(x=years,y=results_dep[5001,],col=cols[3],lwd=2)
   lines(x=years,y=results_dep[9501,],col=cols[4],lwd=2)
-  abline(v=2017)
+  abline(v=base_output$endyr)
   abline(h=0.3,lwd=2)
 text(2004,0.27,"Target")
 abline(h=0.15,lwd=2,lty=3)
@@ -1448,14 +1098,14 @@ lines(x=years,y=results_tbio[501,]/1000,col=cols[1],lwd=2)
 lines(x=years,y=results_tbio[2001,]/1000,col=cols[2],lwd=2)
 lines(x=years,y=results_tbio[5001,]/1000,col=cols[3],lwd=2)
 lines(x=years,y=results_tbio[9501,]/1000,col=cols[4],lwd=2)
-abline(v=2017)
+abline(v=base_output$endyr)
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,7),
      xlab="Year",ylab="Red Tide Kill (Biomass, 1000s metric tons)",las=1)
 lines(x=years,y=results_RTkillbio[501,]/1000,col=cols[1],lwd=2)
 lines(x=years,y=results_RTkillbio[2001,]/1000,col=cols[2],lwd=2)
 lines(x=years,y=results_RTkillbio[5001,]/1000,col=cols[3],lwd=2)
 lines(x=years,y=results_RTkillbio[9501,]/1000,col=cols[4],lwd=2)
-abline(v=2017)
+abline(v=base_output$endyr)
 dev.off()
 
 
@@ -1543,6 +1193,98 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results
 for(i in Mean3)
 {
   lines(x=years,y=results_dep[i,])
+}
+dev.off()
+
+cols<-brewer.pal(11, "RdYlBu") 
+#Want this repeated for baseline simulations across true values
+#Reverse colors so blue is good and red is bad ()
+cols<-rev(c(rep(cols[1],1500),rep(cols[2],1500),rep(cols[3],1500),rep(cols[4],1500),rep(cols[5],1500),
+            rep(cols[6],1500),rep(cols[7],1500),rep(cols[8],1500),rep(cols[9],1500),rep(cols[10],1500),
+            rep(cols[11],1500)))
+
+jpeg(paste0(DIR,"Sims_byTrueMean_Subset_1.jpeg"),res=300,height=2400,width=3000)
+par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
+#Landings
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="Landings (1000s metric tons)",las=1)
+text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
+for(i in Mean1_sub) {
+    lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+  }
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="",las=1)
+text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="",las=1)
+text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+}
+
+#SSB
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
+     xaxt="n",ylab="Spawning Stock Biomass (Relative # Eggs)",las=1)
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_SSB[i,]/1000000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
+     xaxt="n",ylab="",las=1)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_SSB[i,]/1000000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000000,max(results_SSB)/1000000),
+     xaxt="n",ylab="",las=1)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_SSB[i,]/1000000,col=cols[i])
+}
+
+#SPR
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
+     xlab="Year",ylab="SPR Ratio",las=1,xaxt="n")
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_SPR[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
+     xlab="Year",ylab="",las=1,xaxt="n")
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_SPR[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
+     xlab="Year",ylab="",las=1,xaxt="n")
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_SPR[i,],col=cols[i])
+}
+
+#SSB Ratio
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="SSB Ratio (SSB/SSBunfished)",las=1)
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="",las=1)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="",las=1)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
 }
 dev.off()
 
@@ -1766,6 +1508,92 @@ for(i in Mean3)
 }
 dev.off()
 
+jpeg(paste0(DIR,"Sims_byTrueMean_Subset_2.jpeg"),res=300,height=2400,width=3000)
+par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
+# Recruitment
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
+     xlab="Year",ylab="Recruitment (Millions of Fish)",las=1,xaxt="n")
+text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_recr[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_recr[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_recr[i,]/1000,col=cols[i])
+}
+
+# Total Biomass
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="Year",ylab="Total Biomass (1000s metric tons)",las=1,xaxt="n")
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+
+# Red Tide Kill (Biomass)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="Year",ylab="Red Tide Kill (Biomass, 1000s metric tons)",las=1,xaxt="n")
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
+}
+
+#Exploitation Rate
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
+     xlab="Year",ylab="Exploitation Rate (biomass)",las=1)
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_Fexp[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
+     xlab="",ylab="",las=1)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_Fexp[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),0.4),
+     xlab="",ylab="",las=1)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_Fexp[i,],col=cols[i])
+}
+dev.off()
+
 jpeg(paste0(DIR,"SimsPerc_byTrueMean_2.jpeg"),res=300,height=2400,width=3000)
 par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
 #Recruitment
@@ -1982,6 +1810,93 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,
 for(i in Mean3)
 {
   lines(x=years,y=results_RTkillbio[i,]/1000)
+}
+dev.off()
+
+jpeg(paste0(DIR,"Sims_byTrueMean_Subset_Final.jpeg"),res=300,height=3000,width=2800)
+par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
+#Landings
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="Landings (1000s metric tons)",las=1)
+text(2053,max(results_landings)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
+#for(i in seq_along(results_landings[,1]/1000))
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="",las=1)
+text(2053,max(results_landings)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
+     xaxt="n",ylab="",las=1)
+text(2053,max(results_landings)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_landings[i,]/1000,col=cols[i])
+}
+
+#SSB Ratio
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="SSB Ratio (SSB/SSBunfished)",las=1,xaxt="n")
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="",las=1,xaxt="n")
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+     xlab="Year",ylab="",las=1,xaxt="n")
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_dep[i,],col=cols[i])
+}
+
+# Total Biomass
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="Year",ylab="Total Biomass (1000s metric tons)",las=1,xaxt="n")
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+     xlab="",ylab="",las=1,xaxt="n")
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_tbio[i,]/1000,col=cols[i])
+}
+
+# Red Tide Kill (Biomass)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="Year",ylab="Red Tide Kill (Biomass, 1000s metric tons)",las=1)
+for(i in Mean1_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="",ylab="",las=1)
+for(i in Mean2_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
+}
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,max(results_RTkillbio)/1000),
+     xlab="",ylab="",las=1)
+for(i in Mean3_sub)
+{
+  lines(x=years,y=results_RTkillbio[i,]/1000,col=cols[i])
 }
 dev.off()
 
