@@ -649,7 +649,7 @@ dev.off()
 # Results Combined Summary #
 ############################
 
-jpeg(paste0(DIR,"Summary_Final.jpeg"),res=300,height=2400,width=2000)
+jpeg(paste0(DIR,"Summary_Final.jpeg"),res=300,height=2700,width=2400)
 par(mfrow=c(4,3),mar=c(2,4,0.5,1),oma=c(0.1,0.1,0.1,0.1))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      ylab="Landings (1000s metric tons)",xlab="",las=1,xaxt="n")
@@ -698,7 +698,6 @@ for(i in seq_along(results_dep_summary_mean[,1]))
     lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
-
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      xlab="",ylab="",las=1,xaxt="n")
 abline(h=0.4)
@@ -708,6 +707,10 @@ for(i in seq_along(results_dep_summary_mean[,1]))
     lines(x=years,y=results_dep_summary_mean[i,],col=cols[i])
   }
 }
+text(2000,0.95,"Baseline RTM")
+legend(1970,0.925,legend=c("0","0.01","0.02","0.03","0.04","0.05"),lty=1,col=cols[seq(1,31,3)[1:6]],bty="n")
+legend(2020,0.925,legend=c("0.06","0.07","0.08","0.09","0.1"),lty=1,col=cols[seq(1,31,3)[7:11]],bty="n")
+
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      ylab="Total Biomass (1000s metric tons)",xlab="",las=1,xaxt="n")
 for(i in seq_along(results_tbio_summary_mean[,1]))
@@ -1076,7 +1079,7 @@ Mean3<-Mean2+500
 Mean3_sub<-Mean2_sub+500
 
 cols<-brewer.pal(4, "RdYlBu")
-jpeg(paste0(DIR,"Deterministic.jpeg"),res=300,height=2800,width=2000)
+jpeg(paste0(DIR,"Deterministic.jpeg"),res=300,height=2700,width=2000)
 par(mfrow=c(4,1),mar=c(1,4,0.1,0.5),oma=c(2,0.2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="Landings (1000s metric tons)",las=1)
@@ -1087,12 +1090,14 @@ lines(x=years,y=results_landings[2001,]/1000,col=cols[2],lwd=2)
 lines(x=years,y=results_landings[5001,]/1000,col=cols[3],lwd=2)
 lines(x=years,y=results_landings[9501,]/1000,col=cols[4],lwd=2)
 abline(v=base_output$endyr)
+text(1983,4.25,"Assessment Period",cex=1.1)
+text(2032,4.22,"Projection Period",cex=1.1)
 legend("topright",legend=c("Red tide mortality = 0",
                            "Red tide mortality = 0.01",
                            "Red tide mortality = 0.03",
                            "Red tide mortality = 0.06"),
-       col=cols,bty="n",lty=c(1,1,1,1),lwd=c(2,2,2,2))
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+       col=cols,bty="n",lty=c(1,1,1,1),lwd=c(2,2,2,2),cex=1.2)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),0.7),
      xlab="Year",ylab="SSB Ratio (SSB/SSBunfished)",las=1,xaxt="n")
 lines(x=years,y=results_dep[501,],col=cols[1],lwd=2)
 lines(x=years,y=results_dep[2001,],col=cols[2],lwd=2)
@@ -1100,10 +1105,10 @@ lines(x=years,y=results_dep[5001,],col=cols[3],lwd=2)
 lines(x=years,y=results_dep[9501,],col=cols[4],lwd=2)
 abline(v=base_output$endyr)
 abline(h=0.4,lwd=2)
-text(2004,0.35,"Target")
+text(2004,0.35,"Target",cex=1.1)
 abline(h=0.2,lwd=2,lty=3)
-text(2020,0.15,"Minimum Stock Size Threshold")
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+text(2055,0.15,"Minimum Stock Size Threshold",cex=1.1)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,55),
      xlab="Year",ylab="Total Biomass (1000s metric tons)",las=1,xaxt="n")
 lines(x=years,y=results_tbio[501,]/1000,col=cols[1],lwd=2)
 lines(x=years,y=results_tbio[2001,]/1000,col=cols[2],lwd=2)
@@ -1300,21 +1305,21 @@ par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="Landings (1000s metric tons)",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.25)))),
         col=adjustcolor(rc[2],alpha.f=0.2),border=NA)
 lines(x=years,y=apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.5)))
-text(2080,3.5,"90th Percentile",col=rc[1])
+text(2080,3.5,"95th Percentile",col=rc[1])
 text(2080,3,"50th Percentile",col=rc[2])
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1324,8 +1329,8 @@ lines(x=years,y=apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.5)))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1334,8 +1339,8 @@ lines(x=years,y=apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000,max(results_SSB)/1000),
      xaxt="n",ylab="Spawning Stock Biomass (1000s mt)",las=1)
-polygon(c(years,rev(years)),c(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.25)))),
@@ -1344,8 +1349,8 @@ lines(x=years,y=apply(results_SSB[Mean1,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000,max(results_SSB)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1354,8 +1359,8 @@ lines(x=years,y=apply(results_SSB[Mean2,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SSB)/1000,max(results_SSB)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1365,8 +1370,8 @@ lines(x=years,y=apply(results_SSB[Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      xaxt="n",ylab="SPR Ratio",las=1)
-polygon(c(years,rev(years)),c(apply(results_SPR[Mean1,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_SPR[Mean1,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SPR[Mean1,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_SPR[Mean1,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SPR[Mean1,],2,quantile,probs=c(0.75)),
                               rev(apply(results_SPR[Mean1,],2,quantile,probs=c(0.25)))),
@@ -1375,8 +1380,8 @@ lines(x=years,y=apply(results_SPR[Mean1,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_SPR[Mean2,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_SPR[Mean2,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SPR[Mean2,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_SPR[Mean2,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SPR[Mean2,],2,quantile,probs=c(0.75)),
                               rev(apply(results_SPR[Mean2,],2,quantile,probs=c(0.25)))),
@@ -1385,8 +1390,8 @@ lines(x=years,y=apply(results_SPR[Mean2,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_SPR),max(results_SPR)),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_SPR[Mean3,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_SPR[Mean3,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_SPR[Mean3,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_SPR[Mean3,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_SPR[Mean3,],2,quantile,probs=c(0.75)),
                               rev(apply(results_SPR[Mean3,],2,quantile,probs=c(0.25)))),
@@ -1395,8 +1400,8 @@ lines(x=years,y=apply(results_SPR[Mean3,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="SSB Ratio (SSB/SSBunfished)",las=1)
-polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.25)))),
@@ -1405,8 +1410,8 @@ lines(x=years,y=apply(results_dep[Mean1,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.25)))),
@@ -1415,8 +1420,8 @@ lines(x=years,y=apply(results_dep[Mean2,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.25)))),
@@ -1603,21 +1608,21 @@ par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xaxt="n",ylab="Recruitment (Millions of Fish)",las=1)
 text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.25)))),
         col=adjustcolor(rc[2],alpha.f=0.2),border=NA)
 lines(x=years,y=apply(results_recr[Mean1,]/1000,2,quantile,probs=c(0.5)))
-text(2080,11.5,"90th Percentile",col=rc[1])
+text(2080,11.5,"95th Percentile",col=rc[1])
 text(2080,10,"50th Percentile",col=rc[2])
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1627,8 +1632,8 @@ lines(x=years,y=apply(results_recr[Mean2,]/1000,2,quantile,probs=c(0.5)))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_recr)/1000,max(results_recr)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_recr)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1637,8 +1642,8 @@ lines(x=years,y=apply(results_recr[Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="Total Biomass (1000s mt)",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.25)))),
@@ -1647,8 +1652,8 @@ lines(x=years,y=apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1657,8 +1662,8 @@ lines(x=years,y=apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1667,8 +1672,8 @@ lines(x=years,y=apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
      xaxt="n",ylab="Red Tide Kill (Biomass, 1000s mt)",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.25)))),
@@ -1677,8 +1682,8 @@ lines(x=years,y=apply(results_RTkillbio [Mean1,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1687,8 +1692,8 @@ lines(x=years,y=apply(results_RTkillbio [Mean2,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1697,8 +1702,8 @@ lines(x=years,y=apply(results_RTkillbio [Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
      ylab="Exploitation Rate (biomass)",las=1)
-polygon(c(years,rev(years)),c(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.75)),
                               rev(apply(results_Fexp[Mean1,],2,quantile,probs=c(0.25)))),
@@ -1707,8 +1712,8 @@ lines(x=years,y=apply(results_Fexp[Mean1,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.75)),
                               rev(apply(results_Fexp[Mean2,],2,quantile,probs=c(0.25)))),
@@ -1717,8 +1722,8 @@ lines(x=years,y=apply(results_Fexp[Mean2,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_Fexp),max(results_Fexp)),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.75)),
                               rev(apply(results_Fexp[Mean3,],2,quantile,probs=c(0.25)))),
@@ -1908,21 +1913,21 @@ par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="Landings (1000s metric tons)",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.01",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.25)))),
         col=adjustcolor(rc[2],alpha.f=0.2),border=NA)
 lines(x=years,y=apply(results_landings[Mean1,]/1000,2,quantile,probs=c(0.5)))
-text(2080,3.5,"90th Percentile",col=rc[1])
+text(2080,3.5,"95th Percentile",col=rc[1])
 text(2080,3.2,"50th Percentile",col=rc[2])
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.03",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1932,8 +1937,8 @@ lines(x=years,y=apply(results_landings[Mean2,]/1000,2,quantile,probs=c(0.5)))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      xaxt="n",ylab="",las=1)
 text(2050,max(results_landings)/1000*0.95,"True Future RTM mean=0.06",cex=1.5)
-polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -1943,8 +1948,8 @@ lines(x=years,y=apply(results_landings[Mean3,]/1000,2,quantile,probs=c(0.5)))
 #SSB Ratio
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="SSB Ratio (SSB/SSBunfished)",las=1,xaxt="n")
-polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean1,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean1,],2,quantile,probs=c(0.25)))),
@@ -1953,8 +1958,8 @@ lines(x=years,y=apply(results_dep[Mean1,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="",las=1,xaxt="n")
-polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean2,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean2,],2,quantile,probs=c(0.25)))),
@@ -1963,8 +1968,8 @@ lines(x=years,y=apply(results_dep[Mean2,],2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="",las=1,xaxt="n")
-polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.95)),
-                              rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.975)),
+                              rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_dep[Mean3,],2,quantile,probs=c(0.75)),
                               rev(apply(results_dep[Mean3,],2,quantile,probs=c(0.25)))),
@@ -1974,8 +1979,8 @@ lines(x=years,y=apply(results_dep[Mean3,],2,quantile,probs=c(0.5)))
 #Total Biomass
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="Total Biomass (1000s mt)",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.25)))),
@@ -1984,8 +1989,8 @@ lines(x=years,y=apply(results_tbio[Mean1,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.25)))),
@@ -1994,8 +1999,8 @@ lines(x=years,y=apply(results_tbio[Mean2,]/1000,2,quantile,probs=c(0.5)))
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
      xaxt="n",ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.25)))),
@@ -2003,30 +2008,30 @@ polygon(c(years,rev(years)),c(apply(results_tbio[Mean3,]/1000,2,quantile,probs=c
 lines(x=years,y=apply(results_tbio[Mean3,]/1000,2,quantile,probs=c(0.5)))
 
 #Red Tide Kill (biomass)
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),20),
      ylab="Red Tide Kill (Biomass, 1000s mt)",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean1,]/1000,2,quantile,probs=c(0.25)))),
         col=adjustcolor(rc[2],alpha.f=0.2),border=NA)
 lines(x=years,y=apply(results_RTkillbio [Mean1,]/1000,2,quantile,probs=c(0.5)))
 
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),20),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean2,]/1000,2,quantile,probs=c(0.25)))),
         col=adjustcolor(rc[2],alpha.f=0.2),border=NA)
 lines(x=years,y=apply(results_RTkillbio [Mean2,]/1000,2,quantile,probs=c(0.5)))
 
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),10),
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio/1000),20),
      ylab="",las=1)
-polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.95)),
-                              rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.05)))),
+polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.975)),
+                              rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.025)))),
         col=adjustcolor(rc[1],alpha.f=0.2),border=NA)
 polygon(c(years,rev(years)),c(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.75)),
                               rev(apply(results_RTkillbio[Mean3,]/1000,2,quantile,probs=c(0.25)))),

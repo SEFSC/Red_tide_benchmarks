@@ -639,7 +639,7 @@ dev.off()
 # Results Combined Summary #
 ############################
 
-jpeg(paste0(DIR,"Summary_Final.jpeg"),res=300,height=2700,width=2000)
+jpeg(paste0(DIR,"Summary_Final.jpeg"),res=300,height=2700,width=2400)
 par(mfrow=c(4,3),mar=c(2,4,0.5,1),oma=c(0.1,0.1,0.1,0.1))
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,max(results_landings)/1000),
      ylab="Landings (1000s metric tons)",xlab="",las=1,xaxt="n")
@@ -668,6 +668,9 @@ for(i in seq_along(results_landings_summary_mean[,1]))
       lines(x=years,y=results_landings_summary_mean[i,]/1000,col=cols[i])
   }
 }
+text(2060,5.25,"Baseline RTM")
+legend(2020,5.2,legend=c("0","0.01","0.02","0.03","0.04","0.05"),lty=1,col=cols[seq(1,31,3)[1:6]],bty="n")
+legend(2060,5.2,legend=c("0.06","0.07","0.08","0.09","0.1"),lty=1,col=cols[seq(1,31,3)[7:11]],bty="n")
 
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
      ylab="SSB Ratio (SSB/SSBunfished)",xlab="",las=1,xaxt="n")
@@ -1076,12 +1079,14 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_landings)/1000,m
   lines(x=years,y=results_landings[5001,]/1000,col=cols[3],lwd=2)
   lines(x=years,y=results_landings[9501,]/1000,col=cols[4],lwd=2)
 abline(v=base_output$endyr)
+text(2003,6.25,"Assessment Period",cex=1.1)
+text(2028,6.2,"Projection Period",cex=1.1)
 legend("topright",legend=c("Red tide mortality = 0",
                            "Red tide mortality = 0.01",
                            "Red tide mortality = 0.03",
                            "Red tide mortality = 0.06"),
-       col=cols,bty="n",lty=c(1,1,1,1),lwd=c(2,2,2,2))
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results_dep)),
+       col=cols,bty="n",lty=c(1,1,1,1),lwd=c(2,2,2,2),cex=1.2)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),0.6),
      xlab="Year",ylab="SSB Ratio (SSB/SSBunfished)",las=1,xaxt="n")
   lines(x=years,y=results_dep[501,],col=cols[1],lwd=2)
   lines(x=years,y=results_dep[2001,],col=cols[2],lwd=2)
@@ -1089,10 +1094,10 @@ plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_dep),max(results
   lines(x=years,y=results_dep[9501,],col=cols[4],lwd=2)
   abline(v=base_output$endyr)
   abline(h=0.3,lwd=2)
-text(2004,0.27,"Target")
+text(2004,0.27,"Target",cex=1.1)
 abline(h=0.15,lwd=2,lty=3)
-text(2020,0.12,"Minimum Stock Size Threshold")
-plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,max(results_tbio)/1000),
+text(2020,0.12,"Minimum Stock Size Threshold",cex=1.1)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_tbio)/1000,35),
      xlab="Year",ylab="Total Biomass (1000s metric tons)",las=1,xaxt="n")
 lines(x=years,y=results_tbio[501,]/1000,col=cols[1],lwd=2)
 lines(x=years,y=results_tbio[2001,]/1000,col=cols[2],lwd=2)
