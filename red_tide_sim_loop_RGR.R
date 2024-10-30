@@ -25,6 +25,7 @@ library(r4ss)
 library(RColorBrewer)
 #Source setup file that should be named local.setup so that it will be 
 #ignored by github tracking. 
+# options(max.print = 100000000) #remove limit which messed up forecast file in a few base runs
 #
 DIR<-"C://Users/skyler.sagarese/Desktop/RT/RGR/" #Specify RGR or GAG
 local.setup.location <- paste0(DIR,"local.setup.txt")
@@ -34,7 +35,7 @@ source(local.setup.location)
 #Source in the SEFSC projections function
 source(projection_script)
 
-# #Copy files to the simulation folder 
+# #Copy files to the simulation folder
 # if(dir.exists(file.path(working_dir))){
 #   unlink(file.path(working_dir), recursive = TRUE)
 # }
@@ -115,7 +116,7 @@ results_Fexp <- matrix(data=NA,nrow=(length(rt_proj_ave)*length(rt_mean)*n_rand_
 #Index to track row for filling results data
 index_row <- 1
 
-# #First loop over the red tide rate included in projections as this will only 
+# #First loop over the red tide rate included in projections as this will only
 # #need the projections to be calculated once.
 # for(i in seq_along(rt_proj_ave)){
 #   #remove exisiting base folders if found
@@ -128,20 +129,20 @@ index_row <- 1
 #   dir.create(file.path(proj_dir,"Base"))
 #   temp.files <- list.files(path=file.path(working_dir,"Base"))
 #   file.copy(from = file.path(working_dir,"Base",temp.files), to = file.path(proj_dir,"Base",temp.files))
-#   
+# 
 #   #Adjust the redtide values for the base projection and rerun the projections
 #   #to estimate OFL.
-#   #For now I'm leaving out ABC as I think it distracts from the intent of the 
-#   #simulation because ABC is supposed to account for unknown uncertainty not 
+#   #For now I'm leaving out ABC as I think it distracts from the intent of the
+#   #simulation because ABC is supposed to account for unknown uncertainty not
 #   #offset an avoidable bias such as this.
 #   #This uses the average red tide rate in every projection year
 #   forecast_base$ForeCatch[forecast_base$ForeCatch$Fleet==rt_fleet & forecast_base$ForeCatch$Year>(base_output$endyr+N_fixed_years),4] <- rep(rt_proj_ave[i],(forecast_base$Nforecastyrs-N_fixed_years))
-#   
+# 
 #   r4ss::SS_writeforecast(mylist=forecast_base,dir=file.path(proj_dir,"Base"),overwrite=TRUE)
 # 
-#   base_proj <- run.projections(file.path(proj_dir,"Base")) 
-#   
-#   #Loop over all mean red tide level scenarios 
+#   base_proj <- run.projections(file.path(proj_dir,"Base"))
+# 
+#   #Loop over all mean red tide level scenarios
 #   for(j in seq_along(rt_mean)){
 #     #remove exisiting mean red tide folders if found
 #     rt_dir <- file.path(proj_dir,paste0("rt_mean_",j))
@@ -150,18 +151,18 @@ index_row <- 1
 #     }
 #     #Create new folder for each mean red tide level and copy over the original model files
 #     dir.create(rt_dir)
-#     
-#     #Loop over all random red tide sequences 
+# 
+#     #Loop over all random red tide sequences
 #     for(k in 1:n_rand_reps){
 #       #reset random seed for each random replicate seeds will be replicated across
 #       #projected red tide levels and mean red tide levels
-#       
+# 
 #       set.seed(rand_seed[k])
 #       #Create folders for each random sequence
 #       dir.create(file.path(rt_dir,k))
 #       temp.files <- list.files(path=file.path(proj_dir,"Base","OFL_target"))
 #       file.copy(from = file.path(proj_dir,"Base","OFL_target",temp.files), to = file.path(rt_dir,k,temp.files))
-#       
+# 
 #       #Calculate a random red tide mortality vector based on specified mean and frequency
 #       #draw a random number of red tide events from a uniform distribution between min and max number specified
 #       n_rt_events <- sample(n_rt_events_min:n_rt_events_max,1) #
@@ -175,20 +176,20 @@ index_row <- 1
 #       rand_red_tide <- rep(0,(forecast_base$Nforecastyrs))
 #       #randomly select years for the red tide mortality to occur and replace zero's with random mortality rates
 #       rand_red_tide[sample((N_fixed_years+1):forecast_base$Nforecastyrs,n_rt_events)] <- rt_mags
-#       
-#       
+# 
+# 
 #       #Modify forecast file to include random red tide mortality sequence
-#       forecast_rt <- r4ss::SS_readforecast(file=file.path(rt_dir,k,"forecast.ss")) 
+#       forecast_rt <- r4ss::SS_readforecast(file=file.path(rt_dir,k,"forecast.ss"))
 #       forecast_rt$ForeCatch[forecast_rt$ForeCatch$Fleet==rt_fleet & forecast_rt$ForeCatch$Year>(base_output$endyr+N_fixed_years),4] <- rand_red_tide[(N_fixed_years+1):forecast_base$Nforecastyrs]
 #       #Write out the new forecast file and run model with new random mortality vector
 #       r4ss::SS_writeforecast(mylist=forecast_rt,dir=file.path(rt_dir,k),overwrite=TRUE)
 #       shell(paste("cd /d ",file.path(rt_dir,k)," && ss -nohess",sep=""))
-#       
+# 
 #       #Read in results and save values of interest for analysis
 #       run_output <- r4ss::SS_output(dir=file.path(rt_dir,k),covar = FALSE)
-#       
+# 
 #       spr_series <- run_output$sprseries
-#       
+# 
 #       time_series <- run_output$timeseries
 #       time_series_virg <- time_series[time_series$Era=="VIRG",]
 #       time_series <- time_series[time_series$Era!="VIRG" & time_series$Era!="INIT",]
@@ -1106,13 +1107,22 @@ lines(x=years,y=results_tbio[9501,]/1000,col=cols[4],lwd=2)
 abline(v=base_output$endyr)
 plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,7),
      xlab="Year",ylab="Red Tide Kill (Biomass, 1000s metric tons)",las=1)
-lines(x=years,y=results_RTkillbio[501,]/1000,col=cols[1],lwd=2)
-lines(x=years,y=results_RTkillbio[2001,]/1000,col=cols[2],lwd=2)
-lines(x=years,y=results_RTkillbio[5001,]/1000,col=cols[3],lwd=2)
 lines(x=years,y=results_RTkillbio[9501,]/1000,col=cols[4],lwd=2)
+lines(x=years,y=results_RTkillbio[5001,]/1000,col=cols[3],lwd=2)
+lines(x=years,y=results_RTkillbio[2001,]/1000,col=cols[2],lwd=2)
+lines(x=years,y=results_RTkillbio[501,]/1000,col=cols[1],lwd=2)
 abline(v=base_output$endyr)
 dev.off()
 
+jpeg(paste0(DIR,"Deterministic_RT.jpeg"),res=300,height=2000,width=2000)
+plot(x=NA,y=NA,xlim=c(min(years),max(years)),ylim=c(min(results_RTkillbio)/1000,7),
+     xlab="Year",ylab="Red Tide Kill (Biomass, 1000s metric tons)",las=1)
+lines(x=years,y=results_RTkillbio[9501,]/1000,col=cols[4],lwd=2)
+lines(x=years,y=results_RTkillbio[5001,]/1000,col=cols[3],lwd=2)
+lines(x=years,y=results_RTkillbio[2001,]/1000,col=cols[2],lwd=2)
+lines(x=years,y=results_RTkillbio[501,]/1000,col=cols[1],lwd=2)
+abline(v=base_output$endyr)
+dev.off()
 
 jpeg(paste0(DIR,"Sims_byTrueMean_1.jpeg"),res=300,height=2400,width=3000)
 par(mfrow=c(4,3),mar=c(2,4,1,1),oma=c(0.2,0.2,0.2,0.2))
@@ -2040,503 +2050,133 @@ dev.off()
 
 
 
-# 
-# ##############################################
-# # Calculate Stock Status for each simulation #
-# ##############################################
-# 
-# MSSTfrac<-0.5
-# 
-# # Current SSB (2017) / SSBMSY (2117)
-# #Mean 0.01
-# Sims[Sims$Mean==1,]
-# SSB_1<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# colnames(SSB_1)<-c("Mean1_0","Mean1_0.01","Mean1_0.02","Mean1_0.03","Mean1_0.04",
-#                    "Mean1_0.05","Mean1_0.06","Mean1_0.07","Mean1_0.08","Mean1_0.09","Mean1_0.10")
-# SSB_1$Mean1_0<-results_SSB[1:500,32]/743840 #results_SSB[1:500,132]
-# SSB_1$Mean1_0.01<-results_SSB[1501:2000,32]/743840
-# SSB_1$Mean1_0.02<-results_SSB[3001:3500,32]/743840
-# SSB_1$Mean1_0.03<-results_SSB[4501:5000,32]/743840
-# SSB_1$Mean1_0.04<-results_SSB[6001:6500,32]/743840
-# SSB_1$Mean1_0.05<-results_SSB[7501:8000,32]/743840
-# SSB_1$Mean1_0.06<-results_SSB[9001:9500,32]/743840
-# SSB_1$Mean1_0.07<-results_SSB[10501:11000,32]/743840
-# SSB_1$Mean1_0.08<-results_SSB[12001:12500,32]/743840
-# SSB_1$Mean1_0.09<-results_SSB[13501:14000,32]/743840
-# SSB_1$Mean1_0.10<-results_SSB[15001:15500,32]/743840
-# 
-# #Mean 0.03
-# Sims[Sims$Mean==2,]
-# SSB_2<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# colnames(SSB_2)<-c("Mean2_0","Mean2_0.01","Mean2_0.02","Mean2_0.03","Mean2_0.04",
-#                    "Mean2_0.05","Mean2_0.06","Mean2_0.07","Mean2_0.08","Mean2_0.09","Mean2_0.10")
-# SSB_2$Mean2_0<-results_SSB[501:1000,32]/743840
-# SSB_2$Mean2_0.01<-results_SSB[2001:2500,32]/743840
-# SSB_2$Mean2_0.02<-results_SSB[3501:4000,32]/743840
-# SSB_2$Mean2_0.03<-results_SSB[5001:5500,32]/743840
-# SSB_2$Mean2_0.04<-results_SSB[6501:7000,32]/743840
-# SSB_2$Mean2_0.05<-results_SSB[8001:8500,32]/743840
-# SSB_2$Mean2_0.06<-results_SSB[9501:10000,32]/743840
-# SSB_2$Mean2_0.07<-results_SSB[11001:11500,32]/743840
-# SSB_2$Mean2_0.08<-results_SSB[12501:13000,32]/743840
-# SSB_2$Mean2_0.09<-results_SSB[14001:14500,32]/743840
-# SSB_2$Mean2_0.10<-results_SSB[15501:16000,32]/743840
-# 
-# #Mean 0.06
-# Sims[Sims$Mean==3,]
-# SSB_3<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# colnames(SSB_3)<-c("Mean3_0","Mean3_0.01","Mean3_0.02","Mean3_0.03","Mean3_0.04",
-#                    "Mean3_0.05","Mean3_0.06","Mean3_0.07","Mean3_0.08","Mean3_0.09","Mean3_0.10")
-# SSB_3$Mean3_0<-results_SSB[1001:1500,32]/743840
-# SSB_3$Mean3_0.01<-results_SSB[2501:3000,32]/743840
-# SSB_3$Mean3_0.02<-results_SSB[4001:4500,32]/743840
-# SSB_3$Mean3_0.03<-results_SSB[5501:6000,32]/743840
-# SSB_3$Mean3_0.04<-results_SSB[7001:7500,32]/743840
-# SSB_3$Mean3_0.05<-results_SSB[8501:9000,32]/743840
-# SSB_3$Mean3_0.06<-results_SSB[10001:10500,32]/743840
-# SSB_3$Mean3_0.07<-results_SSB[11501:12000,32]/743840
-# SSB_3$Mean3_0.08<-results_SSB[13001:13500,32]/743840
-# SSB_3$Mean3_0.09<-results_SSB[14501:15000,32]/743840
-# SSB_3$Mean3_0.10<-results_SSB[16001:16500,32]/743840
-# 
-# # # Current F (geom mean 2015-2017) / FMSY (2117)
-# # #Mean 0.01
-# # Sims[Sims$Mean==1,]
-# # Fexp_1<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# # colnames(Fexp_1)<-c("Mean1_0","Mean1_0.01","Mean1_0.02","Mean1_0.03","Mean1_0.04",
-# #                     "Mean1_0.05","Mean1_0.06","Mean1_0.07","Mean1_0.08","Mean1_0.09","Mean1_0.10")
-# # #values are identical across rows, so just using geom mean
-# # Fexp_1$Mean1_0<-exp(mean(log((results_Fexp[1:500,30:32]))))/results_Fexp[1:500,132]
-# # Fexp_1$Mean1_0.01<-exp(mean(log((results_Fexp[1501:200,30:32]))))/results_Fexp[1501:2000,132]
-# # Fexp_1$Mean1_0.02<-exp(mean(log((results_Fexp[3001:3500,30:32]))))/results_Fexp[3001:3500,132]
-# # Fexp_1$Mean1_0.03<-exp(mean(log((results_Fexp[4501:5000,30:32]))))/results_Fexp[4501:5000,132]
-# # Fexp_1$Mean1_0.04<-exp(mean(log((results_Fexp[6001:6500,30:32]))))/results_Fexp[6001:6500,132]
-# # Fexp_1$Mean1_0.05<-exp(mean(log((results_Fexp[7501:8000,30:32]))))/results_Fexp[7501:8000,132]
-# # Fexp_1$Mean1_0.06<-exp(mean(log((results_Fexp[9001:9500,30:32]))))/results_Fexp[9001:9500,132]
-# # Fexp_1$Mean1_0.07<-exp(mean(log((results_Fexp[10501:11000,30:32]))))/results_Fexp[10501:11000,132]
-# # Fexp_1$Mean1_0.08<-exp(mean(log((results_Fexp[12001:12500,30:32]))))/results_Fexp[12001:12500,132]
-# # Fexp_1$Mean1_0.09<-exp(mean(log((results_Fexp[13501:14000,30:32]))))/results_Fexp[13501:14000,132]
-# # Fexp_1$Mean1_0.10<-exp(mean(log((results_Fexp[15001:15500,30:32]))))/results_Fexp[15001:15500,132]
-# # 
-# # #Mean 0.03
-# # Sims[Sims$Mean==2,]
-# # Fexp_2<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# # colnames(Fexp_2)<-c("Mean2_0","Mean2_0.01","Mean2_0.02","Mean2_0.03","Mean2_0.04",
-# #                     "Mean2_0.05","Mean2_0.06","Mean2_0.07","Mean2_0.08","Mean2_0.09","Mean2_0.10")
-# # #values are identical across rows, so just using geom mean
-# # Fexp_2$Mean2_0<-exp(mean(log((results_Fexp[501:1000,30:32]))))/results_Fexp[501:1000,132]
-# # Fexp_2$Mean2_0.01<-exp(mean(log((results_Fexp[2001:2500,30:32]))))/results_Fexp[2001:2500,132]
-# # Fexp_2$Mean2_0.02<-exp(mean(log((results_Fexp[3501:4000,30:32]))))/results_Fexp[3501:4000,132]
-# # Fexp_2$Mean2_0.03<-exp(mean(log((results_Fexp[1500:5500,30:32]))))/results_Fexp[5001:5500,132]
-# # Fexp_2$Mean2_0.04<-exp(mean(log((results_Fexp[6501:7000,30:32]))))/results_Fexp[6501:7000,132]
-# # Fexp_2$Mean2_0.05<-exp(mean(log((results_Fexp[8001:8500,30:32]))))/results_Fexp[8001:8500,132]
-# # Fexp_2$Mean2_0.06<-exp(mean(log((results_Fexp[9501:10000,30:32]))))/results_Fexp[9501:10000,132]
-# # Fexp_2$Mean2_0.07<-exp(mean(log((results_Fexp[11001:11500,30:32]))))/results_Fexp[11001:11500,132]
-# # Fexp_2$Mean2_0.08<-exp(mean(log((results_Fexp[12501:13000,30:32]))))/results_Fexp[12501:13000,132]
-# # Fexp_2$Mean2_0.09<-exp(mean(log((results_Fexp[14001:14500,30:32]))))/results_Fexp[14001:14500,132]
-# # Fexp_2$Mean2_0.10<-exp(mean(log((results_Fexp[15501:16000,30:32]))))/results_Fexp[15501:16000,132]
-# # 
-# # #Mean 0.06
-# # Sims[Sims$Mean==3,]
-# # Fexp_3<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
-# # colnames(Fexp_3)<-c("Mean3_0","Mean3_0.01","Mean3_0.02","Mean3_0.03","Mean3_0.04",
-# #                     "Mean3_0.05","Mean3_0.06","Mean3_0.07","Mean3_0.08","Mean3_0.09","Mean3_0.10")
-# # #values are identical across rows, so just using geom mean
-# # Fexp_3$Mean3_0<-exp(mean(log((results_Fexp[1001:1500,30:32]))))/results_Fexp[1001:1500,132]
-# # Fexp_3$Mean3_0.01<-exp(mean(log((results_Fexp[2501:3000,30:32]))))/results_Fexp[2501:3000,132]
-# # Fexp_3$Mean3_0.02<-exp(mean(log((results_Fexp[4001:4500,30:32]))))/results_Fexp[4001:4500,132]
-# # Fexp_3$Mean3_0.03<-exp(mean(log((results_Fexp[5501:6000,30:32]))))/results_Fexp[5501:6000,132]
-# # Fexp_3$Mean3_0.04<-exp(mean(log((results_Fexp[7001:7500,30:32]))))/results_Fexp[7001:7500,132]
-# # Fexp_3$Mean3_0.05<-exp(mean(log((results_Fexp[8501:9000,30:32]))))/results_Fexp[8501:9000,132]
-# # Fexp_3$Mean3_0.06<-exp(mean(log((results_Fexp[10001:10500,30:32]))))/results_Fexp[10001:10500,132]
-# # Fexp_3$Mean3_0.07<-exp(mean(log((results_Fexp[11501:12000,30:32]))))/results_Fexp[11501:12000,132]
-# # Fexp_3$Mean3_0.08<-exp(mean(log((results_Fexp[13001:13500,30:32]))))/results_Fexp[13001:13500,132]
-# # Fexp_3$Mean3_0.09<-exp(mean(log((results_Fexp[14501:15000,30:32]))))/results_Fexp[14501:15000,132]
-# # Fexp_3$Mean3_0.10<-exp(mean(log((results_Fexp[16001:16500,30:32]))))/results_Fexp[16001:16500,132]
-# 
-# # Tabulate number of sims where:
-# # SSB/SSBMSY < 0.5 (MSST) = OVERFISHED
-# # F/FMSY > 1 = OVERFISHING
-# # B dropping below 10%
-# Ref<-as.data.frame(rbind(length(which(SSB_1$Mean1_0<MSSTfrac)),length(which(SSB_1$Mean1_0.01<MSSTfrac)),
-#                          length(which(SSB_1$Mean1_0.02<MSSTfrac)),length(which(SSB_1$Mean1_0.03<MSSTfrac)),
-#                          length(which(SSB_1$Mean1_0.04<MSSTfrac)),length(which(SSB_1$Mean1_0.05<MSSTfrac)),
-#                          length(which(SSB_1$Mean1_0.06<MSSTfrac)),length(which(SSB_1$Mean1_0.07<MSSTfrac)),
-#                          length(which(SSB_1$Mean1_0.08<MSSTfrac)),length(which(SSB_1$Mean1_0.09<MSSTfrac)),
-#                          length(which(SSB_1$Mean1_0.10<MSSTfrac))))
-# rownames(Ref)<-c("Background0","Background0.01","Background0.02","Background0.03",
-#                  "Background0.04","Background0.05","Background0.06","Background0.07",
-#                  "Background0.08","Background0.09","Background0.10")
-# colnames(Ref)<-c("Overfished_Mean1")
-# # Ref$Overfishing_Mean1<-c(length(which(Fexp_1$Mean1_0>1)),length(which(Fexp_1$Mean1_0.01>1)),
-# #                          length(which(Fexp_1$Mean1_0.02>1)),length(which(Fexp_1$Mean1_0.03>1)),
-# #                          length(which(Fexp_1$Mean1_0.04>1)),length(which(Fexp_1$Mean1_0.05>1)),
-# #                          length(which(Fexp_1$Mean1_0.06>1)),length(which(Fexp_1$Mean1_0.07>1)),
-# #                          length(which(Fexp_1$Mean1_0.08>1)),length(which(Fexp_1$Mean1_0.09>1)),
-# #                          length(which(Fexp_1$Mean1_0.10>1)))
-# Ref$BBelow20_Mean1<-c(length(which(SSB_1$Mean1_0<0.2)),length(which(SSB_1$Mean1_0.01<0.2)),
-#                       length(which(SSB_1$Mean1_0.02<0.2)),length(which(SSB_1$Mean1_0.03<0.2)),
-#                       length(which(SSB_1$Mean1_0.04<0.2)),length(which(SSB_1$Mean1_0.05<0.2)),
-#                       length(which(SSB_1$Mean1_0.06<0.2)),length(which(SSB_1$Mean1_0.07<0.2)),
-#                       length(which(SSB_1$Mean1_0.08<0.2)),length(which(SSB_1$Mean1_0.09<0.2)),
-#                       length(which(SSB_1$Mean1_0.10<0.2)))
-# Ref$Overfished_Mean2<-c(length(which(SSB_2$Mean2_0<MSSTfrac)),length(which(SSB_2$Mean2_0.01<MSSTfrac)),
-#                         length(which(SSB_2$Mean2_0.02<MSSTfrac)),length(which(SSB_2$Mean2_0.03<MSSTfrac)),
-#                         length(which(SSB_2$Mean2_0.04<MSSTfrac)),length(which(SSB_2$Mean2_0.05<MSSTfrac)),
-#                         length(which(SSB_2$Mean2_0.06<MSSTfrac)),length(which(SSB_2$Mean2_0.07<MSSTfrac)),
-#                         length(which(SSB_2$Mean2_0.08<MSSTfrac)),length(which(SSB_2$Mean2_0.09<MSSTfrac)),
-#                         length(which(SSB_2$Mean2_0.10<MSSTfrac)))
-# # Ref$Overfishing_Mean2<-c(length(which(Fexp_2$Mean2_0>1)),length(which(Fexp_2$Mean2_0.01>1)),
-# #                          length(which(Fexp_2$Mean2_0.02>1)),length(which(Fexp_2$Mean2_0.03>1)),
-# #                          length(which(Fexp_2$Mean2_0.04>1)),length(which(Fexp_2$Mean2_0.05>1)),
-# #                          length(which(Fexp_2$Mean2_0.06>1)),length(which(Fexp_2$Mean2_0.07>1)),
-# #                          length(which(Fexp_2$Mean2_0.08>1)),length(which(Fexp_2$Mean2_0.09>1)),
-# #                          length(which(Fexp_2$Mean2_0.10>1)))
-# Ref$BBelow20_Mean2<-c(length(which(SSB_2$Mean2_0<0.2)),length(which(SSB_2$Mean1_0.01<0.2)),
-#                       length(which(SSB_2$Mean2_0.02<0.2)),length(which(SSB_2$Mean1_0.03<0.2)),
-#                       length(which(SSB_2$Mean2_0.04<0.2)),length(which(SSB_2$Mean1_0.05<0.2)),
-#                       length(which(SSB_2$Mean2_0.06<0.2)),length(which(SSB_2$Mean1_0.07<0.2)),
-#                       length(which(SSB_2$Mean2_0.08<0.2)),length(which(SSB_2$Mean1_0.09<0.2)),
-#                       length(which(SSB_2$Mean2_0.10<0.2)))
-# Ref$Overfished_Mean3<-c(length(which(SSB_3$Mean3_0<MSSTfrac)),length(which(SSB_3$Mean3_0.01<MSSTfrac)),
-#                         length(which(SSB_3$Mean3_0.02<MSSTfrac)),length(which(SSB_3$Mean3_0.03<MSSTfrac)),
-#                         length(which(SSB_3$Mean3_0.04<MSSTfrac)),length(which(SSB_3$Mean3_0.05<MSSTfrac)),
-#                         length(which(SSB_3$Mean3_0.06<MSSTfrac)),length(which(SSB_3$Mean3_0.07<MSSTfrac)),
-#                         length(which(SSB_3$Mean3_0.08<MSSTfrac)),length(which(SSB_3$Mean3_0.09<MSSTfrac)),
-#                         length(which(SSB_3$Mean3_0.10<MSSTfrac)))
-# # Ref$Overfishing_Mean3<-c(length(which(Fexp_3$Mean3_0>1)),length(which(Fexp_3$Mean3_0.01>1)),
-# #                          length(which(Fexp_3$Mean3_0.02>1)),length(which(Fexp_3$Mean3_0.03>1)),
-# #                          length(which(Fexp_3$Mean3_0.04>1)),length(which(Fexp_3$Mean3_0.05>1)),
-# #                          length(which(Fexp_3$Mean3_0.06>1)),length(which(Fexp_3$Mean3_0.07>1)),
-# #                          length(which(Fexp_3$Mean3_0.08>1)),length(which(Fexp_3$Mean3_0.09>1)),
-# #                          length(which(Fexp_3$Mean3_0.10>1)))
-# Ref$BBelow20_Mean3<-c(length(which(SSB_3$Mean3_0<0.2)),length(which(SSB_3$Mean3_0.01<0.2)),
-#                       length(which(SSB_3$Mean3_0.02<0.2)),length(which(SSB_3$Mean3_0.03<0.2)),
-#                       length(which(SSB_3$Mean3_0.04<0.2)),length(which(SSB_3$Mean3_0.05<0.2)),
-#                       length(which(SSB_3$Mean3_0.06<0.2)),length(which(SSB_3$Mean3_0.07<0.2)),
-#                       length(which(SSB_3$Mean3_0.08<0.2)),length(which(SSB_3$Mean3_0.09<0.2)),
-#                       length(which(SSB_3$Mean3_0.10<0.2)))
-# Ref<-Ref/500 #500 total sims
-# write.csv(Ref,"StockStatus.csv")
-# 
-# YMax=8
-# XMax=3
-# jpeg("Mean1.jpg",res=300,height=2400,width=3000)
-# par(mfrow=c(3,4),oma=c(2,2,0,0),mar=c(2,2,1,1))
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0,y=Fexp_1$Mean1_0)
-# text(2,7,"Baseline = 0")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.01,y=Fexp_1$Mean1_0.01)
-# text(2,7,"Baseline = 0.01")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.02,y=Fexp_1$Mean1_0.02)
-# text(2,7,"Baseline = 0.02")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.03,y=Fexp_1$Mean1_0.03)
-# text(2,7,"Baseline = 0.03")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.04,y=Fexp_1$Mean1_0.04)
-# text(2,7,"Baseline = 0.04")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.05,y=Fexp_1$Mean1_0.05)
-# text(2,7,"Baseline = 0.05")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.06,y=Fexp_1$Mean1_0.06)
-# text(2,7,"Baseline = 0.06")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.07,y=Fexp_1$Mean1_0.07)
-# text(2,7,"Baseline = 0.07")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.08,y=Fexp_1$Mean1_0.08)
-# text(2,7,"Baseline = 0.08")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.09,y=Fexp_1$Mean1_0.09)
-# text(2,7,"Baseline = 0.09")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_1$Mean1_0.10,y=Fexp_1$Mean1_0.10)
-# text(2,7,"Baseline = 0.10")
-# mtext(side=1,"B/BMSYproxy",outer=T)
-# mtext(side=2,"F/FMSYproxy",outer=T)
-# dev.off()
-# 
-# YMax=10
-# XMax=3
-# jpeg("Mean2.jpg",res=300,height=2400,width=3000)
-# par(mfrow=c(3,4),oma=c(2,2,0,0),mar=c(2,2,1,1))
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0,y=Fexp_2$Mean2_0)
-# text(2,7,"Baseline = 0")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.01,y=Fexp_2$Mean2_0.01)
-# text(2,7,"Baseline = 0.01")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.02,y=Fexp_2$Mean2_0.02)
-# text(2,7,"Baseline = 0.02")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.03,y=Fexp_2$Mean2_0.03)
-# text(2,7,"Baseline = 0.03")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.04,y=Fexp_2$Mean2_0.04)
-# text(2,7,"Baseline = 0.04")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.05,y=Fexp_2$Mean2_0.05)
-# text(2,7,"Baseline = 0.05")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.06,y=Fexp_2$Mean2_0.06)
-# text(2,7,"Baseline = 0.06")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.07,y=Fexp_2$Mean2_0.07)
-# text(2,7,"Baseline = 0.07")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.08,y=Fexp_2$Mean2_0.08)
-# text(2,7,"Baseline = 0.08")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.09,y=Fexp_2$Mean2_0.09)
-# text(2,7,"Baseline = 0.09")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_2$Mean2_0.10,y=Fexp_2$Mean2_0.10)
-# text(2,7,"Baseline = 0.10")
-# mtext(side=1,"B/BMSYproxy",outer=T)
-# mtext(side=2,"F/FMSYproxy",outer=T)
-# dev.off()
-# 
-# 
-# YMax=12
-# XMax=3
-# jpeg("Mean3.jpg",res=300,height=2400,width=3000)
-# par(mfrow=c(3,4),oma=c(2,2,0,0),mar=c(2,2,1,1))
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0,y=Fexp_3$Mean3_0)
-# text(2,7,"Baseline = 0")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.01,y=Fexp_3$Mean3_0.01)
-# text(2,7,"Baseline = 0.01")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.02,y=Fexp_3$Mean3_0.02)
-# text(2,7,"Baseline = 0.02")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.03,y=Fexp_3$Mean3_0.03)
-# text(2,7,"Baseline = 0.03")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.04,y=Fexp_3$Mean3_0.04)
-# text(2,7,"Baseline = 0.04")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.05,y=Fexp_3$Mean3_0.05)
-# text(2,7,"Baseline = 0.05")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.06,y=Fexp_3$Mean3_0.06)
-# text(2,7,"Baseline = 0.06")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.07,y=Fexp_3$Mean3_0.07)
-# text(2,7,"Baseline = 0.07")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.08,y=Fexp_3$Mean3_0.08)
-# text(2,7,"Baseline = 0.08")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.09,y=Fexp_3$Mean3_0.09)
-# text(2,7,"Baseline = 0.09")
-# 
-# plot(x=NA,y=NA,xlim=c(0,XMax),ylim=c(0,YMax),ylab="",xlab="",las=1)
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(0 ,1, 1, 0), col='yellow')
-# polygon(c(0, 0, MSSTfrac, MSSTfrac), c(1 ,YMax, YMax, 1), col='red')
-# polygon(c(1, 1, XMax, XMax), c(1 ,YMax, YMax, 1), col='yellow')
-# polygon(c(1, 1, XMax, XMax), c(0 ,1, 1, 0), col='green')
-# polygon(c(MSSTfrac, MSSTfrac, 1, 1), c(0 ,YMax, YMax, 0), col='orange')
-# points(x=SSB_3$Mean3_0.10,y=Fexp_3$Mean3_0.10)
-# text(2,7,"Baseline = 0.10")
-# mtext(side=1,"B/BMSYproxy",outer=T)
-# mtext(side=2,"F/FMSYproxy",outer=T)
-# dev.off()
-# 
-# 
-# 
+
+##############################################
+# Calculate Stock Status for each simulation #
+##############################################
+
+Bench<-read.csv("Bench_targets.csv",header=T)
+
+MSSTfrac<-0.5
+
+# Current SSB (2017) / SSBMSY (2117)
+#Mean 0.01
+Sims[Sims$Mean==1,]
+SSB_1<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(SSB_1)<-c("Mean1_0","Mean1_0.01","Mean1_0.02","Mean1_0.03","Mean1_0.04",
+                   "Mean1_0.05","Mean1_0.06","Mean1_0.07","Mean1_0.08","Mean1_0.09","Mean1_0.10")
+SSB_1$Mean1_0<-results_SSB[1:500,32]/Bench$GeomMeanSSB[1] #bench from original projection with baseline
+SSB_1$Mean1_0.01<-results_SSB[1501:2000,32]/Bench$GeomMeanSSB[2]
+SSB_1$Mean1_0.02<-results_SSB[3001:3500,32]/Bench$GeomMeanSSB[3]
+SSB_1$Mean1_0.03<-results_SSB[4501:5000,32]/Bench$GeomMeanSSB[4]
+SSB_1$Mean1_0.04<-results_SSB[6001:6500,32]/Bench$GeomMeanSSB[5]
+SSB_1$Mean1_0.05<-results_SSB[7501:8000,32]/Bench$GeomMeanSSB[6]
+SSB_1$Mean1_0.06<-results_SSB[9001:9500,32]/Bench$GeomMeanSSB[7]
+SSB_1$Mean1_0.07<-results_SSB[10501:11000,32]/Bench$GeomMeanSSB[8]
+SSB_1$Mean1_0.08<-results_SSB[12001:12500,32]/Bench$GeomMeanSSB[9]
+SSB_1$Mean1_0.09<-results_SSB[13501:14000,32]/Bench$GeomMeanSSB[10]
+SSB_1$Mean1_0.10<-results_SSB[15001:15500,32]/Bench$GeomMeanSSB[11]
+
+#Mean 0.03
+Sims[Sims$Mean==2,]
+SSB_2<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(SSB_2)<-c("Mean2_0","Mean2_0.01","Mean2_0.02","Mean2_0.03","Mean2_0.04",
+                   "Mean2_0.05","Mean2_0.06","Mean2_0.07","Mean2_0.08","Mean2_0.09","Mean2_0.10")
+SSB_2$Mean2_0<-results_SSB[501:1000,32]/Bench$GeomMeanSSB[1] #bench from original projection with baseline
+SSB_2$Mean2_0.01<-results_SSB[2001:2500,32]/Bench$GeomMeanSSB[2]
+SSB_2$Mean2_0.02<-results_SSB[3501:4000,32]/Bench$GeomMeanSSB[3]
+SSB_2$Mean2_0.03<-results_SSB[5001:5500,32]/Bench$GeomMeanSSB[4]
+SSB_2$Mean2_0.04<-results_SSB[6501:7000,32]/Bench$GeomMeanSSB[5]
+SSB_2$Mean2_0.05<-results_SSB[8001:8500,32]/Bench$GeomMeanSSB[6]
+SSB_2$Mean2_0.06<-results_SSB[9501:10000,32]/Bench$GeomMeanSSB[7]
+SSB_2$Mean2_0.07<-results_SSB[11001:11500,32]/Bench$GeomMeanSSB[8]
+SSB_2$Mean2_0.08<-results_SSB[12501:13000,32]/Bench$GeomMeanSSB[9]
+SSB_2$Mean2_0.09<-results_SSB[14001:14500,32]/Bench$GeomMeanSSB[10]
+SSB_2$Mean2_0.10<-results_SSB[15501:16000,32]/Bench$GeomMeanSSB[11]
+
+#Mean 0.06
+Sims[Sims$Mean==3,]
+SSB_3<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(SSB_3)<-c("Mean3_0","Mean3_0.01","Mean3_0.02","Mean3_0.03","Mean3_0.04",
+                   "Mean3_0.05","Mean3_0.06","Mean3_0.07","Mean3_0.08","Mean3_0.09","Mean3_0.10")
+SSB_3$Mean3_0<-results_SSB[1001:1500,32]/Bench$GeomMeanSSB[1] #bench from original projection with baseline
+SSB_3$Mean3_0.01<-results_SSB[2501:3000,32]/Bench$GeomMeanSSB[2]
+SSB_3$Mean3_0.02<-results_SSB[4001:4500,32]/Bench$GeomMeanSSB[3]
+SSB_3$Mean3_0.03<-results_SSB[5501:6000,32]/Bench$GeomMeanSSB[4]
+SSB_3$Mean3_0.04<-results_SSB[7001:7500,32]/Bench$GeomMeanSSB[5]
+SSB_3$Mean3_0.05<-results_SSB[8501:9000,32]/Bench$GeomMeanSSB[6]
+SSB_3$Mean3_0.06<-results_SSB[10001:10500,32]/Bench$GeomMeanSSB[7]
+SSB_3$Mean3_0.07<-results_SSB[11501:12000,32]/Bench$GeomMeanSSB[8]
+SSB_3$Mean3_0.08<-results_SSB[13001:13500,32]/Bench$GeomMeanSSB[9]
+SSB_3$Mean3_0.09<-results_SSB[14501:15000,32]/Bench$GeomMeanSSB[10]
+SSB_3$Mean3_0.10<-results_SSB[16001:16500,32]/Bench$GeomMeanSSB[11]
+
+# Current F (geom mean 2015-2017) / FMSY (2117)
+#Mean 0.01
+Sims[Sims$Mean==1,]
+Fexp_1<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(Fexp_1)<-c("Mean1_0","Mean1_0.01","Mean1_0.02","Mean1_0.03","Mean1_0.04",
+                    "Mean1_0.05","Mean1_0.06","Mean1_0.07","Mean1_0.08","Mean1_0.09","Mean1_0.10")
+#values are identical across rows, so just using geom mean
+Fexp_1$Mean1_0<-exp(mean(log((results_Fexp[1:500,30:32]))))/Bench$GeomMeanF[1] #bench from original projection with baseline
+Fexp_1$Mean1_0.01<-exp(mean(log((results_Fexp[1501:200,30:32]))))/Bench$GeomMeanF[2]
+Fexp_1$Mean1_0.02<-exp(mean(log((results_Fexp[3001:3500,30:32]))))/Bench$GeomMeanF[3]
+Fexp_1$Mean1_0.03<-exp(mean(log((results_Fexp[4501:5000,30:32]))))/Bench$GeomMeanF[4]
+Fexp_1$Mean1_0.04<-exp(mean(log((results_Fexp[6001:6500,30:32]))))/Bench$GeomMeanF[5]
+Fexp_1$Mean1_0.05<-exp(mean(log((results_Fexp[7501:8000,30:32]))))/Bench$GeomMeanF[6]
+Fexp_1$Mean1_0.06<-exp(mean(log((results_Fexp[9001:9500,30:32]))))/Bench$GeomMeanF[7]
+Fexp_1$Mean1_0.07<-exp(mean(log((results_Fexp[10501:11000,30:32]))))/Bench$GeomMeanF[8]
+Fexp_1$Mean1_0.08<-exp(mean(log((results_Fexp[12001:12500,30:32]))))/Bench$GeomMeanF[9]
+Fexp_1$Mean1_0.09<-exp(mean(log((results_Fexp[13501:14000,30:32]))))/Bench$GeomMeanF[10]
+Fexp_1$Mean1_0.10<-exp(mean(log((results_Fexp[15001:15500,30:32]))))/Bench$GeomMeanF[11]
+
+#Mean 0.03
+Sims[Sims$Mean==2,]
+Fexp_2<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(Fexp_2)<-c("Mean2_0","Mean2_0.01","Mean2_0.02","Mean2_0.03","Mean2_0.04",
+                    "Mean2_0.05","Mean2_0.06","Mean2_0.07","Mean2_0.08","Mean2_0.09","Mean2_0.10")
+#values are identical across rows, so just using geom mean
+Fexp_2$Mean2_0<-exp(mean(log((results_Fexp[501:1000,30:32]))))/Bench$GeomMeanF[1] #bench from original projection with baseline
+Fexp_2$Mean2_0.01<-exp(mean(log((results_Fexp[2001:2500,30:32]))))/Bench$GeomMeanF[2]
+Fexp_2$Mean2_0.02<-exp(mean(log((results_Fexp[3501:4000,30:32]))))/Bench$GeomMeanF[3]
+Fexp_2$Mean2_0.03<-exp(mean(log((results_Fexp[1500:5500,30:32]))))/Bench$GeomMeanF[4]
+Fexp_2$Mean2_0.04<-exp(mean(log((results_Fexp[6501:7000,30:32]))))/Bench$GeomMeanF[5]
+Fexp_2$Mean2_0.05<-exp(mean(log((results_Fexp[8001:8500,30:32]))))/Bench$GeomMeanF[6]
+Fexp_2$Mean2_0.06<-exp(mean(log((results_Fexp[9501:10000,30:32]))))/Bench$GeomMeanF[7]
+Fexp_2$Mean2_0.07<-exp(mean(log((results_Fexp[11001:11500,30:32]))))/Bench$GeomMeanF[8]
+Fexp_2$Mean2_0.08<-exp(mean(log((results_Fexp[12501:13000,30:32]))))/Bench$GeomMeanF[9]
+Fexp_2$Mean2_0.09<-exp(mean(log((results_Fexp[14001:14500,30:32]))))/Bench$GeomMeanF[10]
+Fexp_2$Mean2_0.10<-exp(mean(log((results_Fexp[15501:16000,30:32]))))/Bench$GeomMeanF[11]
+
+#Mean 0.06
+Sims[Sims$Mean==3,]
+Fexp_3<-as.data.frame(matrix(ncol=11,nrow=500)) #500 sims vs 11 scenarios (base RTM)
+colnames(Fexp_3)<-c("Mean3_0","Mean3_0.01","Mean3_0.02","Mean3_0.03","Mean3_0.04",
+                    "Mean3_0.05","Mean3_0.06","Mean3_0.07","Mean3_0.08","Mean3_0.09","Mean3_0.10")
+#values are identical across rows, so just using geom mean
+Fexp_3$Mean3_0<-exp(mean(log((results_Fexp[1001:1500,30:32]))))/Bench$GeomMeanF[1] #bench from original projection with baseline
+Fexp_3$Mean3_0.01<-exp(mean(log((results_Fexp[2501:3000,30:32]))))/Bench$GeomMeanF[2]
+Fexp_3$Mean3_0.02<-exp(mean(log((results_Fexp[4001:4500,30:32]))))/Bench$GeomMeanF[3]
+Fexp_3$Mean3_0.03<-exp(mean(log((results_Fexp[5501:6000,30:32]))))/Bench$GeomMeanF[4]
+Fexp_3$Mean3_0.04<-exp(mean(log((results_Fexp[7001:7500,30:32]))))/Bench$GeomMeanF[5]
+Fexp_3$Mean3_0.05<-exp(mean(log((results_Fexp[8501:9000,30:32]))))/Bench$GeomMeanF[6]
+Fexp_3$Mean3_0.06<-exp(mean(log((results_Fexp[10001:10500,30:32]))))/Bench$GeomMeanF[7]
+Fexp_3$Mean3_0.07<-exp(mean(log((results_Fexp[11501:12000,30:32]))))/Bench$GeomMeanF[8]
+Fexp_3$Mean3_0.08<-exp(mean(log((results_Fexp[13001:13500,30:32]))))/Bench$GeomMeanF[9]
+Fexp_3$Mean3_0.09<-exp(mean(log((results_Fexp[14501:15000,30:32]))))/Bench$GeomMeanF[10]
+Fexp_3$Mean3_0.10<-exp(mean(log((results_Fexp[16001:16500,30:32]))))/Bench$GeomMeanF[11]
+
+#All the SSB & F refs are the same
+tail(SSB_1)
+tail(SSB_2)
+tail(SSB_3)
+tail(Fexp_1)
+tail(Fexp_2)
+tail(Fexp_3)
+
+Ref<-rbind(as.numeric(SSB_1[500,]),as.numeric(SSB_2[500,]),as.numeric(SSB_3[500,]),
+           as.numeric(Fexp_1[500,]),as.numeric(Fexp_2[500,]),as.numeric(Fexp_3[500,]))
+colnames(Ref)<-c("Base0","Base0.01","Base0.02","Base0.03","Base0.04","Base0.05",
+                 "Base0.06","Base0.07","Base0.08","Base0.09","Base0.1")
+rownames(Ref)<-c("SSB1","SSB2","SSB3","Fexp1","Fexp2","Fexp3")
+write.csv(Ref,"StockStatus.csv")
